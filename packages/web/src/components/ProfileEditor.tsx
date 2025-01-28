@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -8,9 +8,13 @@ import {
   Alert,
   CircularProgress,
   Grid,
+  Avatar,
+  IconButton,
 } from "@mui/material";
+import { PhotoCamera } from "@mui/icons-material";
 import { useAuth } from "../contexts/AuthContext";
 import { userProfileService } from "../services/userProfile";
+import { storageService } from "../services/storageService";
 import { UpdateUserProfile } from "../types/user";
 
 export default function ProfileEditor() {
@@ -18,6 +22,7 @@ export default function ProfileEditor() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -47,6 +52,36 @@ export default function ProfileEditor() {
         ...prev,
         [name]: value,
       }));
+    }
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!currentUser || !e.target.files || !e.target.files[0]) return;
+
+    setLoading(true);
+    setError("");
+    setSuccess(false);
+
+    try {
+      const file = e.target.files[0];
+      const photoURL = await storageService.uploadAvatar(file, currentUser.uid);
+
+      await userProfileService.updateProfile({
+        uid: currentUser.uid,
+        photoURL,
+      });
+
+      setSuccess(true);
+      // Reload the page to refresh the profile data
+      window.location.reload();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update avatar");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -92,6 +127,36 @@ export default function ProfileEditor() {
       <Typography variant="h5" gutterBottom>
         Edit Profile
       </Typography>
+
+      <Box sx={{ display: "flex", justifyContent: "center", mb: 3 }}>
+        <Box sx={{ position: "relative" }}>
+          <Avatar
+            src={userProfile.photoURL}
+            alt={userProfile.displayName || "User Avatar"}
+            sx={{ width: 100, height: 100, cursor: "pointer" }}
+            onClick={handleAvatarClick}
+          />
+          <IconButton
+            sx={{
+              position: "absolute",
+              bottom: -8,
+              right: -8,
+              backgroundColor: "background.paper",
+            }}
+            onClick={handleAvatarClick}
+            disabled={loading}
+          >
+            <PhotoCamera />
+          </IconButton>
+          <input
+            type="file"
+            ref={fileInputRef}
+            accept="image/*"
+            style={{ display: "none" }}
+            onChange={handleAvatarChange}
+          />
+        </Box>
+      </Box>
 
       <Box component="form" onSubmit={handleSubmit} noValidate>
         <Grid container spacing={2}>

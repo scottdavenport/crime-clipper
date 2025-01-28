@@ -5,17 +5,24 @@ import {
   connectFirestoreEmulator,
   Firestore,
 } from "firebase/firestore";
+import {
+  getStorage,
+  connectStorageEmulator,
+  FirebaseStorage,
+} from "firebase/storage";
 
 // Use minimal config for emulator
 const firebaseConfig = {
   apiKey: "demo-api-key",
   projectId: "demo-crime-clipper",
   authDomain: "localhost",
+  storageBucket: "demo-crime-clipper.appspot.com",
 };
 
 let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
+let storage: FirebaseStorage;
 
 // Initialize Firebase only if no apps exist
 if (!getApps().length) {
@@ -27,6 +34,7 @@ if (!getApps().length) {
 // Initialize services
 auth = getAuth(app);
 db = getFirestore(app);
+storage = getStorage(app);
 
 // Connect to emulators in development
 if (import.meta.env.DEV) {
@@ -41,6 +49,11 @@ if (import.meta.env.DEV) {
   if (db) {
     connectFirestoreEmulator(db, "127.0.0.1", 8080);
   }
+
+  // Connect to Storage emulator
+  if (storage) {
+    connectStorageEmulator(storage, "127.0.0.1", 9199);
+  }
 }
 
-export { app, auth, db };
+export { app, auth, db, storage };
