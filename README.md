@@ -1,14 +1,14 @@
 # Crime Clipper
 
-A modern crime reporting and tracking application.
+A modern crime reporting and tracking application built with React, Firebase, and Material-UI.
 
 ## Development Setup
 
 ### Prerequisites
 
 - Node.js v20 or later
-- Firebase CLI
-- tmux (automatically installed if missing)
+- Firebase CLI (`npm install -g firebase-tools`)
+- tmux (for development environment)
 
 ### Getting Started
 
@@ -25,19 +25,17 @@ cd crime-clipper
 npm install
 ```
 
-### Development Scripts
+3. Start the development environment:
 
-The project includes several convenience scripts to manage development servers:
+```bash
+./scripts/start-all.sh
+```
 
-- `./scripts/start-all.sh` - Starts both Firebase emulators and web development server in split panes
-- `./scripts/start-firebase.sh` - Starts Firebase emulators only
-- `./scripts/start-web.sh` - Starts web development server only
+### Development Environment
 
-### Development Servers
+The project uses a tmux-based development environment that automatically starts all necessary services in split panes:
 
-When running `start-all.sh`, the following services will be available:
-
-#### Firebase Emulators:
+#### Firebase Emulators (Left Pane):
 
 - Authentication: http://localhost:9099
 - Functions: http://localhost:5001
@@ -47,10 +45,19 @@ When running `start-all.sh`, the following services will be available:
 - Storage: http://localhost:9199
 - Eventarc: http://localhost:9299
 - Emulator UI: http://localhost:4000
+- Emulator Hub: http://localhost:4400
 
-#### Web Development Server:
+#### Web Development Server (Right Pane):
 
-- Local: http://localhost:3000
+- Vite Dev Server: http://localhost:3000
+
+### Development Scripts
+
+The project includes several convenience scripts:
+
+- `./scripts/start-all.sh` - Starts both Firebase emulators and web development server
+- `./scripts/start-firebase.sh` - Starts Firebase emulators only
+- `./scripts/start-web.sh` - Starts web development server only
 
 ### Project Structure
 
@@ -60,8 +67,21 @@ crime-clipper/
 │   ├── web/          # React web application
 │   └── functions/    # Firebase Cloud Functions
 ├── scripts/          # Development utility scripts
-└── data/            # Firebase emulator data
+├── data/            # Firebase emulator data
+└── .firebase/       # Firebase cache and configuration
 ```
+
+### Tech Stack
+
+- **Frontend**: React, Material-UI, TypeScript
+- **Backend**: Firebase Services
+  - Authentication
+  - Cloud Functions
+  - Firestore
+  - Cloud Storage
+  - Hosting
+- **Development**: Vite, Firebase Emulators
+- **Testing**: Jest, Firebase Testing
 
 ## Contributing
 
@@ -69,6 +89,8 @@ crime-clipper/
 2. Commit your changes (`git commit -m 'Add some amazing feature'`)
 3. Push to the branch (`git push origin feature/amazing-feature`)
 4. Open a Pull Request
+
+See [ROADMAP.md](ROADMAP.md) for current progress and planned features.
 
 ## License
 
