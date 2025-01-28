@@ -119,6 +119,18 @@ The application uses Firebase Authentication. In development:
 2. Login at `/login`
 3. View authentication status in the Firebase Emulator UI
 
+## User Profiles
+
+The application includes user profile management:
+
+1. Access your profile at `/profile`
+2. Edit profile information:
+   - Display name
+   - Bio
+   - Location
+   - Social media links (YouTube, Spotify, Twitter)
+3. View profile debug information at `/profile-debug`
+
 ## Contributing
 
 1. Create a new branch for your feature

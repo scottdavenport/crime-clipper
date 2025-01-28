@@ -48,9 +48,14 @@ function Layout({ children }: LayoutProps) {
 
           {currentUser ? (
             <>
-              <Typography variant="body1" sx={{ mr: 2 }}>
-                {currentUser.email}
-              </Typography>
+              <Button
+                color="inherit"
+                component={RouterLink}
+                to="/profile"
+                sx={{ mr: 2 }}
+              >
+                Profile
+              </Button>
               <Button color="inherit" onClick={handleSignOut}>
                 Sign Out
               </Button>

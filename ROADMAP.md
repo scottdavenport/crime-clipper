@@ -14,7 +14,7 @@
   - ✅ Basic profile creation
   - ✅ Profile data model
   - ✅ Profile service implementation
-  - [ ] Profile editing
+  - ✅ Profile editing
   - [ ] Avatar upload
   - ✅ User preferences structure
 - [x] Data Models & Database Schema
