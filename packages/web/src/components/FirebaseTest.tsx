@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Box, Typography, Button } from "@mui/material";
-import { initializeApp } from "firebase/app";
+import { FirebaseApp } from "firebase/app";
 import {
   getFunctions,
   httpsCallable,
   connectFunctionsEmulator,
 } from "firebase/functions";
-
-// Initialize Firebase with demo config for emulator
-const app = initializeApp({
-  projectId: "demo-crime-clipper",
-  apiKey: "demo-api-key",
-});
+import { app } from "../config/firebase";
 
 // Initialize Functions and connect to emulator
-const functions = getFunctions(app);
-connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+const functions = getFunctions(app as FirebaseApp);
+if (import.meta.env.DEV) {
+  connectFunctionsEmulator(functions, "127.0.0.1", 5001);
+}
 
 export default function FirebaseTest() {
   const [response, setResponse] = useState<string>("");

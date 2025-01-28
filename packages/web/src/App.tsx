@@ -5,6 +5,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ProfileDebug from "./pages/ProfileDebug";
 import { AuthProvider } from "./contexts/AuthContext";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/profile-debug" element={<ProfileDebug />} />
           </Routes>
         </Layout>
       </ThemeProvider>
