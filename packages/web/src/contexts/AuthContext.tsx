@@ -33,9 +33,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // Check if profile exists, if not create it
         const exists = await userProfileService.profileExists(user.uid);
         if (!exists) {
-          await userProfileService.createProfile({
+          await userProfileService.createOrLinkProfile({
             uid: user.uid,
             email: user.email!,
+            displayName: user.displayName || undefined,
+            photoURL: user.photoURL || undefined,
           });
         }
 

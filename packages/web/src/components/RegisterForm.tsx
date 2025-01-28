@@ -7,10 +7,16 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Divider,
 } from "@mui/material";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
+import { Google as GoogleIcon } from "@mui/icons-material";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
@@ -20,7 +26,7 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Reset error
@@ -50,13 +56,33 @@ export default function RegisterForm() {
     }
   };
 
+  const handleGoogleRegister = async () => {
+    setError("");
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // Registration successful, redirect to home
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to sign up with Google. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Paper sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" component="h1" gutterBottom align="center">
         Create Account
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" onSubmit={handleEmailRegister} noValidate>
         <TextField
           margin="normal"
           required
@@ -111,6 +137,19 @@ export default function RegisterForm() {
           disabled={loading}
         >
           {loading ? <CircularProgress size={24} /> : "Register"}
+        </Button>
+
+        <Divider sx={{ my: 2 }}>OR</Divider>
+
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<GoogleIcon />}
+          onClick={handleGoogleRegister}
+          disabled={loading}
+          sx={{ mb: 2 }}
+        >
+          Sign up with Google
         </Button>
 
         <Button

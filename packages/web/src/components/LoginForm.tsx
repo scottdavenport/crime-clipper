@@ -7,10 +7,16 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Divider,
 } from "@mui/material";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
+import { Google as GoogleIcon } from "@mui/icons-material";
 
 export default function LoginForm() {
   const navigate = useNavigate();
@@ -19,7 +25,7 @@ export default function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
@@ -40,13 +46,33 @@ export default function LoginForm() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    setError("");
+    try {
+      setLoading(true);
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // Login successful, redirect to home
+      navigate("/");
+    } catch (err) {
+      console.error(err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to sign in with Google. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Paper sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 4 }}>
       <Typography variant="h5" component="h1" gutterBottom align="center">
         Sign In
       </Typography>
 
-      <Box component="form" onSubmit={handleSubmit} noValidate>
+      <Box component="form" onSubmit={handleEmailLogin} noValidate>
         <TextField
           margin="normal"
           required
@@ -88,6 +114,19 @@ export default function LoginForm() {
           disabled={loading}
         >
           {loading ? <CircularProgress size={24} /> : "Sign In"}
+        </Button>
+
+        <Divider sx={{ my: 2 }}>OR</Divider>
+
+        <Button
+          fullWidth
+          variant="outlined"
+          startIcon={<GoogleIcon />}
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          sx={{ mb: 2 }}
+        >
+          Sign in with Google
         </Button>
 
         <Button

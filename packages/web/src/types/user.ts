@@ -1,6 +1,7 @@
 export interface UserProfile {
   uid: string; // Firebase Auth UID
   email: string; // User's email
+  linkedUids: string[]; // Array of linked Firebase Auth UIDs for the same user
   displayName?: string; // Optional display name
   photoURL?: string; // URL to user's avatar in Firebase Storage
   createdAt: Date; // When the profile was created
@@ -25,6 +26,8 @@ export type CreateUserProfile = Pick<UserProfile, "uid" | "email"> &
   Partial<Omit<UserProfile, "uid" | "email">>;
 
 // Type for updating a user profile (all fields optional except uid)
-export type UpdateUserProfile = Partial<Omit<UserProfile, "uid">> & {
+export type UpdateUserProfile = Partial<
+  Omit<UserProfile, "uid" | "linkedUids">
+> & {
   uid: string;
 };
