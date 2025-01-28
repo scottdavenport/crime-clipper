@@ -71,6 +71,24 @@ crime-clipper/
 └── .firebase/       # Firebase cache and configuration
 ```
 
+### Features
+
+#### Authentication
+
+- Email/Password registration and login
+- Google Sign-In integration
+- Protected routes for authenticated users
+- Automatic user profile creation
+- Profile management
+
+#### Development Tools
+
+- TypeScript for type safety
+- Material-UI for consistent design
+- Firebase Emulators for local development
+- Error boundary implementation
+- Development environment automation
+
 ### Tech Stack
 
 - **Frontend**: React, Material-UI, TypeScript

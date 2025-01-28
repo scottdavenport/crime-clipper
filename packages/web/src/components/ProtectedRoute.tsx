@@ -8,29 +8,13 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { currentUser, userProfile, loading } = useAuth();
+  const { currentUser, loading } = useAuth();
 
   if (loading) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return null;
   }
 
   if (!currentUser) {
-    return <Navigate to="/login" />;
-  }
-
-  if (!userProfile) {
-    console.log("No user profile found, redirecting to login");
     return <Navigate to="/login" />;
   }
 

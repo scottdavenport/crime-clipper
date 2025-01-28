@@ -28,10 +28,24 @@ export default function RegisterForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const waitForProfile = async () => {
+    let attempts = 0;
+    const maxAttempts = 50; // 5 seconds total
+
+    while (attempts < maxAttempts) {
+      // Check if profile exists
+      if (userProfile) {
+        return true;
+      }
+      // Wait 100ms before next check
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      attempts++;
+    }
+    return false;
+  };
+
   const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Reset error
     setError("");
 
     // Validate passwords match
@@ -48,17 +62,14 @@ export default function RegisterForm() {
 
     try {
       setLoading(true);
+      // Create the user account
       await createUserWithEmailAndPassword(auth, email, password);
 
-      // Wait for profile to be created (max 5 seconds)
-      let attempts = 0;
-      while (!userProfile && attempts < 50) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        attempts++;
-      }
+      // Wait for profile creation (max 5 seconds)
+      const profileCreated = await waitForProfile();
 
-      if (!userProfile) {
-        throw new Error("Failed to create user profile");
+      if (!profileCreated) {
+        throw new Error("Failed to create user profile - timeout");
       }
 
       // Registration and profile creation successful, redirect to home
@@ -78,15 +89,11 @@ export default function RegisterForm() {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
 
-      // Wait for profile to be created (max 5 seconds)
-      let attempts = 0;
-      while (!userProfile && attempts < 50) {
-        await new Promise((resolve) => setTimeout(resolve, 100));
-        attempts++;
-      }
+      // Wait for profile creation (max 5 seconds)
+      const profileCreated = await waitForProfile();
 
-      if (!userProfile) {
-        throw new Error("Failed to create user profile");
+      if (!profileCreated) {
+        throw new Error("Failed to create user profile - timeout");
       }
 
       // Registration and profile creation successful, redirect to home

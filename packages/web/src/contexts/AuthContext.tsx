@@ -38,12 +38,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
           if (!exists) {
             console.log("Creating new profile for:", user.email);
-            await userProfileService.createOrLinkProfile({
+
+            // Ensure we have the required fields
+            if (!user.email) {
+              throw new Error("User email is required");
+            }
+
+            // Create base profile with required fields
+            const profileData = {
               uid: user.uid,
-              email: user.email!,
-              displayName: user.displayName || undefined,
-              photoURL: user.photoURL || undefined,
-            });
+              email: user.email,
+              // Add optional fields if they exist
+              ...(user.displayName ? { displayName: user.displayName } : {}),
+              ...(user.photoURL ? { photoURL: user.photoURL } : {}),
+            };
+
+            await userProfileService.createOrLinkProfile(profileData);
           }
 
           // Get the user profile

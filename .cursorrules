@@ -101,3 +101,26 @@ Each development server should run in its own terminal tab for better monitoring
 - Use Firebase rules for data security and transactions for consistency.
 
 This document consolidates best practices and conventions for projects using React, React Native, Firebase, and Ionic, ensuring scalable and maintainable development.
+
+# Cursor Rules
+
+## Git Commit Rules
+
+1. Always use `git add .` to stage all changes
+2. Use conventional commit messages (feat:, fix:, docs:, etc.)
+3. Update README.md and ROADMAP.md for significant changes
+4. Keep commits atomic and focused
+
+## Code Style
+
+1. Use TypeScript for all new files
+2. Follow Material-UI best practices
+3. Implement proper error handling
+4. Add comments for complex logic
+
+## Development Flow
+
+1. Run tests before commits
+2. Update documentation with code changes
+3. Keep the development environment clean
+4. Use feature branches for new development

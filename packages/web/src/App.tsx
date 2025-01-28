@@ -8,6 +8,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import ProfileDebug from "./pages/ProfileDebug";
 import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -16,11 +17,35 @@ function App() {
         <CssBaseline />
         <Layout>
           <Routes>
-            <Route path="/" element={<Home />} />
+            {/* Public routes */}
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile-debug" element={<ProfileDebug />} />
+
+            {/* Protected routes */}
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Home />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile-debug"
+              element={
+                <ProtectedRoute>
+                  <ProfileDebug />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Layout>
       </ThemeProvider>
