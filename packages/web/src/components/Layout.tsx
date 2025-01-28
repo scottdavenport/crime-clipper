@@ -10,6 +10,7 @@ import {
 import { Link as RouterLink } from "react-router-dom";
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -17,6 +18,16 @@ interface LayoutProps {
 
 function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
+
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      navigate("/login");
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+    }
+  };
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -35,10 +46,15 @@ function Layout({ children }: LayoutProps) {
             Crime Clipper
           </Typography>
 
-          {auth.currentUser ? (
-            <Button color="inherit" onClick={() => auth.signOut()}>
-              Sign Out
-            </Button>
+          {currentUser ? (
+            <>
+              <Typography variant="body1" sx={{ mr: 2 }}>
+                {currentUser.email}
+              </Typography>
+              <Button color="inherit" onClick={handleSignOut}>
+                Sign Out
+              </Button>
+            </>
           ) : (
             <>
               <Button color="inherit" component={RouterLink} to="/register">
