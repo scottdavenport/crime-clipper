@@ -1,6 +1,7 @@
 import React from "react";
 import { Typography, Paper, Box } from "@mui/material";
 import FirebaseTest from "../components/FirebaseTest";
+import ErrorTest from "../components/ErrorTest";
 
 function Home() {
   return (
@@ -12,6 +13,10 @@ function Home() {
         <Typography variant="body1" paragraph>
           Your trusted platform for crime statistics and analysis.
         </Typography>
+      </Paper>
+
+      <Paper sx={{ p: 3, mb: 3 }}>
+        <ErrorTest />
       </Paper>
 
       <Paper sx={{ p: 3 }}>
