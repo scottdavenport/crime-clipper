@@ -27,28 +27,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      console.log("Auth state changed:", user?.email);
       setCurrentUser(user);
 
-      if (user) {
-        // Check if profile exists, if not create it
-        const exists = await userProfileService.profileExists(user.uid);
-        if (!exists) {
-          await userProfileService.createOrLinkProfile({
-            uid: user.uid,
-            email: user.email!,
-            displayName: user.displayName || undefined,
-            photoURL: user.photoURL || undefined,
-          });
+      try {
+        if (user) {
+          // Check if profile exists
+          const exists = await userProfileService.profileExists(user.uid);
+          console.log("Profile exists:", exists);
+
+          if (!exists) {
+            console.log("Creating new profile for:", user.email);
+            await userProfileService.createOrLinkProfile({
+              uid: user.uid,
+              email: user.email!,
+              displayName: user.displayName || undefined,
+              photoURL: user.photoURL || undefined,
+            });
+          }
+
+          // Get the user profile
+          const profile = await userProfileService.getProfile(user.uid);
+          console.log("Retrieved profile:", profile);
+          setUserProfile(profile);
+        } else {
+          setUserProfile(null);
         }
-
-        // Get the user profile
-        const profile = await userProfileService.getProfile(user.uid);
-        setUserProfile(profile);
-      } else {
-        setUserProfile(null);
+      } catch (error) {
+        console.error("Error in auth state change:", error);
+      } finally {
+        setLoading(false);
       }
-
-      setLoading(false);
     });
 
     return unsubscribe;

@@ -3,25 +3,26 @@
 # Exit on error
 set -e
 
+# Get the absolute path to the project root
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
 echo "🚀 Starting all services..."
 
-# Create a new tmux session if not already in one
-if [ -z "$TMUX" ]; then
-    # Start a new session with Firebase
-    tmux new-session -d -s crime-clipper './scripts/start-firebase.sh'
-    
-    # Create a horizontal split with web server
-    tmux split-window -h './scripts/start-web.sh'
-    
-    # Attach to the session
-    tmux attach-session -t crime-clipper
-else
-    echo "Already in a tmux session, creating splits..."
-    # Split the current pane and run services
-    tmux split-window -h './scripts/start-firebase.sh'
-    tmux select-pane -t 0
-    tmux split-window -h './scripts/start-web.sh'
-fi
+# Kill any existing tmux sessions
+tmux kill-server 2>/dev/null || true
+sleep 1
+
+# Create a new tmux session with Firebase
+tmux new-session -d -s crime-clipper "cd '$PROJECT_ROOT' && $PROJECT_ROOT/scripts/start-firebase.sh; read"
+
+# Create a horizontal split with web server
+tmux split-window -h -t crime-clipper "cd '$PROJECT_ROOT' && $PROJECT_ROOT/scripts/start-web.sh; read"
+
+# Set the layout to even horizontal
+tmux select-layout -t crime-clipper even-horizontal
+
+# Attach to the session
+tmux attach-session -t crime-clipper
 
 echo "✨ All services started in split panes"
-echo "📝 Note: Use tmux commands or mouse to switch between panes" 
+echo "📝 Note: Press Ctrl-C in each pane to stop the services" 

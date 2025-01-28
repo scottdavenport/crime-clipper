@@ -17,9 +17,11 @@ import {
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { Google as GoogleIcon } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
+  const { userProfile } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -47,9 +49,22 @@ export default function RegisterForm() {
     try {
       setLoading(true);
       await createUserWithEmailAndPassword(auth, email, password);
-      // Registration successful, redirect to home
+
+      // Wait for profile to be created (max 5 seconds)
+      let attempts = 0;
+      while (!userProfile && attempts < 50) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+
+      if (!userProfile) {
+        throw new Error("Failed to create user profile");
+      }
+
+      // Registration and profile creation successful, redirect to home
       navigate("/");
     } catch (err) {
+      console.error("Registration error:", err);
       setError(err instanceof Error ? err.message : "Failed to create account");
     } finally {
       setLoading(false);
@@ -62,10 +77,22 @@ export default function RegisterForm() {
       setLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      // Registration successful, redirect to home
+
+      // Wait for profile to be created (max 5 seconds)
+      let attempts = 0;
+      while (!userProfile && attempts < 50) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+
+      if (!userProfile) {
+        throw new Error("Failed to create user profile");
+      }
+
+      // Registration and profile creation successful, redirect to home
       navigate("/");
     } catch (err) {
-      console.error(err);
+      console.error("Google registration error:", err);
       setError(
         err instanceof Error
           ? err.message

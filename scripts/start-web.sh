@@ -41,13 +41,13 @@ kill_port() {
     fi
 }
 
-# Web server ports to check (including common dev server ports)
+# Web server ports to check
 echo "🔍 Cleaning up ports..."
 for port in {3000..3010} {5000..5010}; do
     kill_port "$port"
 done
 
-# Kill any existing Node.js development servers
+# Kill any existing development servers
 echo "Killing development server processes..."
 pkill -f "vite" || true
 pkill -f "dev-server" || true
@@ -78,8 +78,16 @@ echo "🚀 Starting web development server..."
 # Change to the web directory
 cd "$(dirname "$0")/../packages/web" || exit
 
-# Start the development server
-npm run dev
+# Enable debug environment variables
+export DEBUG=vite:*
+export VITE_DEBUG=true
+export NODE_OPTIONS="--trace-warnings --trace-deprecation"
+export REACT_DEBUG_TOOLS=true
+export VITE_VERBOSE=true
+export NODE_ENV=development
+
+# Start the development server with debug flags
+npm run dev -- --debug --force 2>&1 | tee vite-debug.log
 
 # Keep the script running
 wait 

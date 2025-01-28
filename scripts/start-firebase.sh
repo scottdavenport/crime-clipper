@@ -22,50 +22,43 @@ trap cleanup_on_exit SIGINT SIGTERM EXIT
 
 echo "🔄 Cleaning up existing Firebase processes..."
 
-# First, remove all hub locator files
+# Remove all emulator hub locator files
 echo "Removing hub locator files..."
-rm -f /tmp/hub-*.json
-rm -f /var/folders/*/*/*/hub-*.json 2>/dev/null || true
+rm -f /tmp/hub-*.json 2>/dev/null || true
+rm -rf ~/.cache/firebase/emulators/* 2>/dev/null || true
+rm -rf "$(pwd)/.firebase" 2>/dev/null || true
 
-# Kill Java processes first (they're the most persistent)
+# Kill all Java emulator processes
 echo "Killing Java processes..."
-for pattern in "firestore.*jar" "pubsub.*jar" "cloud-firestore-emulator" "firebase-database-emulator"; do
-    jps | grep -i "$pattern" | cut -d' ' -f1 | while read -r pid; do
+for pattern in "firestore.*jar" "pubsub.*jar" "cloud-firestore-emulator" "cloud-storage-emulator" "firebase-database-emulator"; do
+    jps | grep -i "$pattern" | cut -d " " -f1 | while read pid; do
         echo "Killing Java process $pid"
         kill -9 "$pid" 2>/dev/null || true
     done
 done
 
-# Kill any remaining Java processes that might be related
-jps | grep -i "emulator" | cut -d' ' -f1 | while read -r pid; do
-    echo "Killing Java emulator process $pid"
-    kill -9 "$pid" 2>/dev/null || true
-done
-
 # Clean up all debug and lock files
 echo "🧹 Cleaning up debug and lock files..."
-find "$(dirname "$0")/.." -name "firebase-debug.log" -delete
-find "$(dirname "$0")/.." -name "firestore-debug.log" -delete
-find "$(dirname "$0")/.." -name "pubsub-debug.log" -delete
-find "$(dirname "$0")/.." -name "ui-debug.log" -delete
-find "$(dirname "$0")/.." -name ".firebase" -type d -exec rm -rf {} +
-find "$(dirname "$0")/.." -name ".emulator*" -delete
+find . -name "firebase-debug.log" -delete 2>/dev/null || true
+find . -name "firestore-debug.log" -delete 2>/dev/null || true
+find . -name "ui-debug.log" -delete 2>/dev/null || true
+find . -name "pubsub-debug.log" -delete 2>/dev/null || true
+find . -name ".emulator*" -delete 2>/dev/null || true
 
-# Kill Firebase processes
+# Kill all Firebase processes
 echo "Killing Firebase processes..."
 pkill -f "firebase" || true
 pkill -f "emulator" || true
 
-# Clean up environment
+# Clean up environment variables
 echo "Cleaning environment..."
-unset FIRESTORE_EMULATOR_HOST
-unset FIREBASE_DATABASE_EMULATOR_HOST
-unset FIREBASE_AUTH_EMULATOR_HOST
-unset FIREBASE_STORAGE_EMULATOR_HOST
-unset PUBSUB_EMULATOR_HOST
-unset CLOUD_FUNCTIONS_EMULATOR_HOST
 unset FIREBASE_EMULATOR_HUB
-unset FIREBASE_LOCAL_HOST
+unset FIREBASE_EMULATORS_PATH
+unset FIREBASE_CONFIG
+unset FIREBASE_PROJECT
+unset FIREBASE_TOKEN
+unset GOOGLE_APPLICATION_CREDENTIALS
+unset GCLOUD_PROJECT
 
 # Wait to ensure everything is cleaned up
 echo "Waiting for processes to fully terminate..."
@@ -74,15 +67,10 @@ sleep 3
 echo "✨ All Firebase processes cleaned up"
 echo "🚀 Starting Firebase emulators..."
 
-# Change to the functions directory
-cd "$(dirname "$0")/../packages/functions" || exit
-
-# Start emulators with clean state and explicit ports
+# Start Firebase emulators
 firebase emulators:start \
-    --only auth,functions,firestore,hosting,pubsub,storage,eventarc \
-    --project demo-crime-clipper \
-    --import=./data \
-    --export-on-exit=./data
-
-# Keep the script running
-wait 
+  --only auth,functions,firestore,hosting,pubsub,storage,eventarc \
+  --project demo-crime-clipper \
+  --import=./data \
+  --export-on-exit=./data \
+  2>&1 | tee firebase-debug.log 

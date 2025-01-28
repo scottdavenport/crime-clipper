@@ -7,17 +7,27 @@ node_modules
 coverage
 
 # Production
-dist
 build
-lib
+dist
+
+# Environment files
+.env
+.env.local
+.env.*.local
 
 # Misc
 .DS_Store
-.env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Firebase
+.firebase/
 *.log
 
 # Debug logs
@@ -27,9 +37,6 @@ yarn-error.log*
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
-
-# Firebase cache
-.firebase/
 
 # Editor directories
 .idea

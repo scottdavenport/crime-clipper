@@ -17,9 +17,11 @@ import {
 import { auth } from "../config/firebase";
 import { useNavigate } from "react-router-dom";
 import { Google as GoogleIcon } from "@mui/icons-material";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function LoginForm() {
   const navigate = useNavigate();
+  const { userProfile } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -32,10 +34,22 @@ export default function LoginForm() {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, email, password);
-      // Login successful, redirect to home
+
+      // Wait for profile to be loaded (max 5 seconds)
+      let attempts = 0;
+      while (!userProfile && attempts < 50) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+
+      if (!userProfile) {
+        throw new Error("Failed to load user profile");
+      }
+
+      // Login and profile loading successful, redirect to home
       navigate("/");
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       setError(
         err instanceof Error
           ? err.message
@@ -52,10 +66,22 @@ export default function LoginForm() {
       setLoading(true);
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      // Login successful, redirect to home
+
+      // Wait for profile to be loaded (max 5 seconds)
+      let attempts = 0;
+      while (!userProfile && attempts < 50) {
+        await new Promise((resolve) => setTimeout(resolve, 100));
+        attempts++;
+      }
+
+      if (!userProfile) {
+        throw new Error("Failed to load user profile");
+      }
+
+      // Login and profile loading successful, redirect to home
       navigate("/");
     } catch (err) {
-      console.error(err);
+      console.error("Google login error:", err);
       setError(
         err instanceof Error
           ? err.message
