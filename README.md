@@ -1,142 +1,75 @@
 # Crime Clipper
 
-A web application for tracking and analyzing crime data.
-
-## Prerequisites
-
-- Node.js (v18 or higher)
-- npm (v9 or higher)
-- Firebase CLI (`npm install -g firebase-tools`)
-
-## Project Structure
-
-```
-crime-clipper/
-├── packages/
-│   ├── functions/     # Firebase Cloud Functions (Backend)
-│   └── web/          # React Web Application (Frontend)
-```
+A modern crime reporting and tracking application.
 
 ## Development Setup
+
+### Prerequisites
+
+- Node.js v20 or later
+- Firebase CLI
+- tmux (automatically installed if missing)
+
+### Getting Started
 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/scottdavenport/crime-clipper.git
+git clone https://github.com/yourusername/crime-clipper.git
 cd crime-clipper
 ```
 
 2. Install dependencies:
 
 ```bash
-# Install root dependencies
-npm install
-
-# Install functions dependencies
-cd packages/functions
-npm install
-
-# Install web dependencies
-cd ../web
 npm install
 ```
 
-## Running the Application
+### Development Scripts
 
-### Starting the Backend (Firebase Emulators)
+The project includes several convenience scripts to manage development servers:
 
-The backend uses Firebase Emulators for local development. To start the emulators:
+- `./scripts/start-all.sh` - Starts both Firebase emulators and web development server in split panes
+- `./scripts/start-firebase.sh` - Starts Firebase emulators only
+- `./scripts/start-web.sh` - Starts web development server only
 
-```bash
-cd packages/functions
-firebase emulators:start
+### Development Servers
+
+When running `start-all.sh`, the following services will be available:
+
+#### Firebase Emulators:
+
+- Authentication: http://localhost:9099
+- Functions: http://localhost:5001
+- Firestore: http://localhost:8080
+- Hosting: http://localhost:5002
+- Pub/Sub: http://localhost:8085
+- Storage: http://localhost:9199
+- Eventarc: http://localhost:9299
+- Emulator UI: http://localhost:4000
+
+#### Web Development Server:
+
+- Local: http://localhost:3000
+
+### Project Structure
+
 ```
-
-This will start the following services:
-
-- Firebase Emulator UI: http://localhost:4000
-- Firebase Functions: http://localhost:5001
-- Firebase Auth: http://localhost:9099
-- Firebase Firestore: http://localhost:8080
-- Firebase PubSub: http://localhost:8085
-- Firebase Storage: http://localhost:9199
-- Firebase Eventarc: http://localhost:9299
-
-### Starting the Frontend (Web App)
-
-To start the web application:
-
-```bash
-cd packages/web
-npm run dev
+crime-clipper/
+├── packages/
+│   ├── web/          # React web application
+│   └── functions/    # Firebase Cloud Functions
+├── scripts/          # Development utility scripts
+└── data/            # Firebase emulator data
 ```
-
-The web application will be available at http://localhost:3000
-
-### Using the Start Script
-
-Alternatively, you can use the provided start script to run both services:
-
-```bash
-./start-dev.sh
-```
-
-This will start both the Firebase emulators and the web application in separate terminal tabs.
-
-### Stopping the Services
-
-To stop all running services:
-
-```bash
-./kill-dev.sh
-```
-
-## Available Scripts
-
-- `npm run dev` - Start the development server (web)
-- `npm run build` - Build the application for production
-- `npm run serve` - Start the Firebase emulators (functions)
-- `npm test` - Run tests
-- `start-dev.sh` - Start all development services
-- `kill-dev.sh` - Stop all development services
-
-## Development URLs
-
-- Web Application: http://localhost:3000
-- Firebase Emulator UI: http://localhost:4000
-- Firebase Functions: http://localhost:5001
-- Firebase Auth: http://localhost:9099
-- Firebase Firestore: http://localhost:8080
-- Firebase PubSub: http://localhost:8085
-- Firebase Storage: http://localhost:9199
-- Firebase Eventarc: http://localhost:9299
-
-## Authentication
-
-The application uses Firebase Authentication. In development:
-
-1. Register a new user at `/register`
-2. Login at `/login`
-3. View authentication status in the Firebase Emulator UI
-
-## User Profiles
-
-The application includes user profile management:
-
-1. Access your profile at `/profile`
-2. Edit profile information:
-   - Display name
-   - Bio
-   - Location
-   - Social media links (YouTube, Spotify, Twitter)
-3. View profile debug information at `/profile-debug`
 
 ## Contributing
 
-1. Create a new branch for your feature
-2. Make your changes
-3. Submit a pull request
+1. Create a feature branch (`git checkout -b feature/amazing-feature`)
+2. Commit your changes (`git commit -m 'Add some amazing feature'`)
+3. Push to the branch (`git push origin feature/amazing-feature`)
+4. Open a Pull Request
 
 ## License
 
-[MIT License](LICENSE)
+[Add your license here]
