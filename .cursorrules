@@ -1,0 +1,103 @@
+## Development Guidelines
+
+### Tech Stack
+
+- **Frontend**: React, React Native, Ionic
+- **Backend**: Firebase, Firebase Functions
+- **Deployment**: Google Firebase, Vercel
+- **Languages**: TypeScript, JavaScript (ES6+)
+- **Testing**: Unit Testing, Firebase Emulator
+
+### Development Servers
+
+Each development server should run in its own terminal tab for better monitoring and debugging:
+
+- **Web Server (Vite)**: Port 3000
+- **Firebase Emulator UI**: Port 4000
+- **Firebase Functions**: Port 5001
+- **Firebase Hosting**: Port 5002
+- **Firebase Firestore**: Port 8080
+- **Firebase Auth**: Port 9099
+- **Firebase PubSub**: Port 8085
+- **Firebase Storage**: Port 9199
+- **Firebase Eventarc**: Port 9299
+
+### Project Structure and Organization
+
+- Use a **monorepo** structure to manage both frontend and backend codebases.
+- Separate frontend and backend into distinct directories (e.g., `frontend/`, `backend/`).
+- Organize files within each directory by feature (e.g., `services/`, `components/`, `pipes/`).
+- Use environment variables for different stages (development, staging, production).
+- Centralize API calls and error handling through dedicated services.
+- Maintain a single point of entry for storage management and retrievals. Use centralized storage keys.
+- Structure Firebase collections logically (e.g., `users/`, `spots/`, `bookings/`).
+- Create Firebase services for each collection type, implementing error handling and transactions in a centralized service.
+- Implement shell scripts for deployments to ensure consistency.
+- Use CI/CD pipelines with staging and canary environments.
+- Use dedicated modules for routing and centralized alert/error handlers.
+
+### File Naming and Conventions
+
+- **camelCase**: Functions, variables (e.g., `getUsers`, `totalPrice`).
+- **kebab-case**: File names (e.g., `user-service.ts`, `home-component.ts`).
+- **PascalCase**: Classes (e.g., `UserService`).
+- **UPPERCASE**: Constants and global variables (e.g., `API_URL`, `APP_VERSION`).
+- Firebase collections: Plural nouns (e.g., `users`, `bookings`).
+- Firebase documents: Descriptive IDs (e.g., `user-${uid}`, `booking-${timestamp}`).
+
+### Dependencies and Frameworks
+
+- Prefer native components and plugins for both mobile and web.
+- Use Firebase SDKs (official) for integration.
+- Ensure dependencies are:
+  - Actively maintained
+  - Secure
+  - Well-documented
+  - Compatible with target devices
+- Use centralized services for native plugins.
+- Avoid unnecessary external libraries unless essential.
+
+### UI and Styles
+
+- Use reusable components for complex UI.
+- Centralize themes, colors, and fonts.
+- Prefer SCSS for styling.
+- Implement loading states and error messages for Firebase operations.
+- Handle Firebase offline persistence and real-time UI updates gracefully.
+
+### Performance and Optimization
+
+- Implement lazy loading and pre-fetching for critical data.
+- Use Firebase query cursors for pagination.
+- Optimize Firebase reads with proper indexing and caching.
+- Monitor Firebase quota usage.
+- Use batch operations for bulk updates.
+- Integrate crash reporting and global error handlers.
+
+### Testing
+
+- Write comprehensive unit tests covering edge cases.
+- Use mock services for native plugins.
+- Test Firebase integration, security rules, and offline functionality.
+- Utilize Firebase Emulator for testing.
+
+### Best Practices
+
+- Follow official guides for React, React Native, Firebase, and Ionic.
+- Ensure all code is committed following GitHub best practices.
+  - Use meaningful commit messages.
+  - Enforce code reviews.
+  - Tag releases appropriately.
+- Automate deployments and builds with shell scripts.
+- Manage Firebase configurations securely for each environment.
+- Regularly review and refine security rules.
+
+### Firebase-Specific Practices
+
+- Use Firebase Authentication for user management.
+- Use Firebase Functions for serverless backend logic.
+- Enable offline persistence and optimize queries.
+- Implement analytics, crash reporting, and authentication for user management.
+- Use Firebase rules for data security and transactions for consistency.
+
+This document consolidates best practices and conventions for projects using React, React Native, Firebase, and Ionic, ensuring scalable and maintainable development.
